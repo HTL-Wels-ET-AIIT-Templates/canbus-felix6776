@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "main.h"
 #include "stm32f429i_discovery_lcd.h"
@@ -54,6 +55,14 @@ void SysTick_Handler(void)
  */
 int main(void)
 {
+	/*  user variable declarations                                              */
+	static bool flm = 0;
+	static bool userButtonIsPressed = 0;
+
+
+
+
+
 	/* MCU Configuration--------------------------------------------------------*/
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
@@ -76,10 +85,11 @@ int main(void)
 
 	LCD_SetFont(&Font8);
 	LCD_SetColors(LCD_COLOR_MAGENTA, LCD_COLOR_BLACK); // TextColor, BackColor
-	LCD_DisplayStringAtLineMode(39, "copyright CAN Experts!", CENTER_MODE);
+	LCD_DisplayStringAtLineMode(39, "copyright Haslinger", CENTER_MODE);
 
 	// ToDo: set up CAN peripherals
-
+	canInit();
+	canInitHardware();
 
 
 	/* Infinite loop */
@@ -89,6 +99,16 @@ int main(void)
 		HAL_Delay(10);
 
 		// ToDo: send data over CAN when user button has been pressed
+		static uint8_t counter = 0;
+		uint8_t txData[4];
+
+		// Button pressed?
+		userButtonIsPressed = GetUserButtonPressed();
+		if (userButtonIsPressed && !flm) {
+			canSendTask();
+		    HAL_Delay(10); // debounce
+		}
+		flm = userButtonIsPressed;
 
 
 

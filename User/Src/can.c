@@ -21,7 +21,7 @@
 /* Private define ------------------------------------------------------------*/
 
 // ToDo: korrekte Prescaler-Einstellung
-#define   CAN1_CLOCK_PRESCALER    1000
+#define   CAN1_CLOCK_PRESCALER    16 // changed from 1000 to 16
 
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef     canHandle;
@@ -70,7 +70,7 @@ void canInit(void) {
 	printf("Bit-Timing-Register: 0x%lx", CAN1->BTR);
 
 	// ToDo (2): set up DS18B20 (temperature sensor)
-
+	tempSensorInit();
 }
 
 /**
@@ -81,18 +81,38 @@ void canInit(void) {
 void canSendTask(void) {
 	// ToDo declare the required variables
 	static unsigned int sendCnt = 0;
-
+	static int data = 0;
 
 
 	// ToDo (2): get temperature value
-
+	data = tempSensorGetTemperature();
 
 
 	// ToDo prepare send data
+	CAN_TxHeaderTypeDef txHeader;
+	CAN_RxHeaderTypeDef rxHeader;
+	uint8_t txData[8]; // array for tx data
+	uint8_t rxData[8]; // array for rx data
 
+	txHeader.StdId = 0x1AB;
+	txHeader.ExtId = 0x00;
+	txHeader.RTR = CAN_RTR_DATA;
+	txHeader.IDE = CAN_ID_STD;
+	txHeader.DLC = 2;
+	txData[0] = ;
+	txData[1] = ;
 
 
 	// ToDo send CAN frame
+	// check if mailboxes are empty (last transmission was successful)
+	if (HAL_CAN_GetTxMailboxesFreeLevel(&canHandle) != 3 ) {
+	... // mail box not empty
+	}
+	// send frame: frame will be copied int send mail box
+	if (HAL_CAN_AddTxMessage(&canHandle, &txHeader, txData, &txMailbox) != HAL_OK)
+	{
+		// send failed
+	}
 
 
 

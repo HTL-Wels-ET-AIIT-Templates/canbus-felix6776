@@ -33,7 +33,7 @@ void tempSensorInit(void)
  * Get
  * return 1 if a device has been found
  */
-float tempSensorGetTemperature()
+float tempSensorGetTemperature() // in °C
 {
 	float temperature = -1e3;
 
