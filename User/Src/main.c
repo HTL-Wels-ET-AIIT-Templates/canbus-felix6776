@@ -19,7 +19,6 @@
 static int GetUserButtonPressed(void);
 static int GetTouchState (int *xCoord, int *yCoord);
 
-{
 void SysTick_Handler(void) {
 	HAL_IncTick();
 }
