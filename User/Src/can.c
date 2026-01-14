@@ -88,21 +88,23 @@ void canSendTask(void) {
 	txData[2] = (uint8_t)((tempPayload >> 8) & 0xFF); // High byte
 
 	// Request Transmission
-	if (HAL_CAN_AddTxMessage(&canHandle, &txHeader, txData, &txMailbox) == HAL_OK) {
-		sendCnt++;
+	if(HAL_CAN_GetTxMailboxesFreeLevel(&canHandle) <= 3){
+		if (HAL_CAN_AddTxMessage(&canHandle, &txHeader, txData, &txMailbox) == HAL_OK) {
+			sendCnt++;
 
-		// Display send counter
-		LCD_SetColors(LCD_COLOR_GREEN, LCD_COLOR_BLACK);
-		LCD_SetPrintPosition(5,15);
-		printf("%5u", sendCnt);
+			// Display send counter
+			LCD_SetColors(LCD_COLOR_GREEN, LCD_COLOR_BLACK);
+			LCD_SetPrintPosition(5,15);
+			printf("%5u", sendCnt);
 
-		// Display sent data (Hex)
-		LCD_SetPrintPosition(11,1);
-		printf("ID:0x1AB D:%02X %02X %02X", txData[0], txData[1], txData[2]);
+			// Display sent data (Hex)
+			LCD_SetPrintPosition(11,1);
+			printf("ID:0x1AB D:%02X %02X %02X", txData[0], txData[1], txData[2]);
 
-        // Display temperature for clarity
-        LCD_SetPrintPosition(12,1);
-        printf("Sent T: %.2f C", currentTemp);
+			// Display temperature for clarity
+			LCD_SetPrintPosition(12,1);
+			printf("Sent T: %.2f C", currentTemp);
+		}
 	}
 }
 
