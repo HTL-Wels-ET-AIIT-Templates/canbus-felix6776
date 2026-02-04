@@ -14,6 +14,7 @@
 #include "ts_calibration.h"
 #include "can.h"
 #include "cancpp.h"
+#include "tempsensor.h"
 
 /* Private function prototypes -----------------------------------------------*/
 static int GetUserButtonPressed(void);
@@ -39,7 +40,7 @@ int main(void) {
 
 	LCD_SetFont(&Font8);
 	LCD_SetColors(LCD_COLOR_MAGENTA, LCD_COLOR_BLACK);
-	LCD_DisplayStringAtLineMode(39, "copyright CAN Experts!", CENTER_MODE);
+	LCD_DisplayStringAtLineMode(39, "copyright Haslinger", CENTER_MODE);
 
 	// Initialize CAN peripherals
 	canInit();

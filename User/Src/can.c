@@ -40,6 +40,7 @@ void canInit(void) {
 	LCD_SetPrintPosition(3,1);
 	printf("CAN1: Send-Recv");
 
+
 	LCD_SetColors(LCD_COLOR_GREEN, LCD_COLOR_BLACK);
 	LCD_SetPrintPosition(5,1);
 	printf("Send-Cnt:");
@@ -54,6 +55,7 @@ void canInit(void) {
 	LCD_SetPrintPosition(15,1);
 	printf("Recv-Data:");
 
+	// Hilfsanzeige für das Bit-Timing zur Kontrolle der Baudrate [cite: 35]
 	LCD_SetPrintPosition(30,1);
 	printf("Bit-Timing-Register: 0x%lx", CAN1->BTR);
 
@@ -88,7 +90,7 @@ void canSendTask(void) {
 	txData[2] = (uint8_t)((tempPayload >> 8) & 0xFF); // High byte
 
 	// Request Transmission
-	if(HAL_CAN_GetTxMailboxesFreeLevel(&canHandle) <= 3){
+	if(HAL_CAN_GetTxMailboxesFreeLevel(&canHandle) == 3){ // wird nur gesendet, wenn alle 3 Mailboxen frei sind
 		if (HAL_CAN_AddTxMessage(&canHandle, &txHeader, txData, &txMailbox) == HAL_OK) {
 			sendCnt++;
 
@@ -133,6 +135,9 @@ void canReceiveTask(void) {
 			printf("ID:0x%03lX DLC:%lu", rxHeader.StdId, rxHeader.DLC);
 			LCD_SetPrintPosition(18,1);
 			printf("Data: %02X %02X %02X %02X", rxData[0], rxData[1], rxData[2], rxData[3]);
+			// Display temperature for clarity
+			LCD_SetPrintPosition(19,1);
+			printf("T: %i C", (int8_t)rxData[2]);
 		}
 	}
 }
